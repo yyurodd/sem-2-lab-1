@@ -1,6 +1,7 @@
 package lab1;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Scanner;
 
 class Student {
@@ -8,7 +9,7 @@ class Student {
     String gender;
     int groupNumber;
     int listNumber;
-    int[] grades = new int[8];
+    int[] grades;
     float averageGrade;
     public Student(String name, String gender, int groupNumber, int listNumber, int[] grades) {
         this.name = name;
@@ -28,7 +29,7 @@ public class StudentArray {
     public static void showAllStudents() {
         for (int i = 0; i < size; i++) {
             System.out.println("Student " + (i+1) + ": " + students[i].name + ", Gender: " + students[i].gender + ", Group Number: " + students[i].groupNumber + ", List Number: " + students[i].listNumber
-            + ", Grades: " + Arrays.toString(students[i].grades));
+                    + ", Grades: " + Arrays.toString(students[i].grades));
         }
     }
 
@@ -87,8 +88,7 @@ public class StudentArray {
             for (int grade : students[i].grades) {
                 sum += grade;
             }
-            float averageGrade = sum / 8;
-            students[i].averageGrade = averageGrade;
+            students[i].averageGrade = sum / 8;
         }
 
         for (int i = 0; i < size - 1; i++){
@@ -101,18 +101,56 @@ public class StudentArray {
             }
         }
 
-        int topNumber = Math.min(5, size);
         System.out.println("Top rated students:");
-        for (int i = 0; i < topNumber; i++){
+        for (int i = 0; i < size; i++){
             System.out.println((i+1) + ". " + students[i].name + " - average grade: " + students[i].averageGrade);
         }
     }
+
+    public static void showMaleFemaleCnt(){
+        for (int i = 0; i < size; i++){
+            int cntMale = 0;
+            int cntFemale = 0;
+            if (Objects.equals(students[i].gender, "Male")){
+                cntMale+=1;
+            }
+            else{
+                cntFemale+=1;
+            }
+            System.out.println("Count of male: " + cntMale +"\nCount of female: " + cntFemale);
+        }
+    }
+
+    public static void showKNumberedStudents(){
+        System.out.println("Enter students list number: ");
+        Scanner scan = new Scanner(System.in);
+        int k = scan.nextInt();
+        int falses = 0;
+        int success = 0;
+        for (int i = 0; i < size; i++){
+            if (students[i].listNumber == k){
+                System.out.println("Student " + (i+1) + ": " + students[i].name + ", Gender: " + students[i].gender + ", Group Number: " + students[i].groupNumber + ", List Number: " + students[i].listNumber
+                        + ", Grades: " + Arrays.toString(students[i].grades));
+                success+=1;
+            }
+            else{
+                falses+=1;
+            }
+        }
+        if (falses > 0 && success == 0){
+            System.out.println("There is no students with this number.");
+        }
+    }
+
+    public static void showScholarshipInfo(){
+        
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter the number of students:");
-        int number = scanner.nextInt();
-        size = number;
+        size = scanner.nextInt();
 
         for (int i = 0; i < size; i++){
             students[i] = createNewStudentFromInput();
@@ -120,9 +158,9 @@ public class StudentArray {
 
 
 
-        System.out.println("All students:");
-        showAllStudents();
+        //System.out.println("All students:");
+       // showAllStudents();
 
-        showTopRatedStudents();
+        showKNumberedStudents();
     }
 }
