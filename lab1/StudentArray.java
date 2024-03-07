@@ -96,11 +96,7 @@ public class StudentArray {
     public static void updateStudentInformation(Student student) {
 
         Scanner scanner = new Scanner(System.in);
-        String gender = students[num].gender;
-        String name = students[num].name;
-        int groupNumber = students[num].groupNumber;
-        int listNumber = students[num].listNumber;
-        int[] grades = students[num].grades;
+        int[] grades;
         System.out.println("Какую информацию вы хотите изменить?");
         System.out.println("1. Имя студента");
         System.out.println("2. Номер группы");
@@ -113,17 +109,16 @@ public class StudentArray {
             case 1:
                 System.out.println("Введите новое имя студента: ");
                 scanner.nextLine();
-                students[num].name = scanner.nextLine();
+                student.name = scanner.nextLine();
                 break;
             case 2:
                 System.out.println("Введите новый номер группы студента: ");
-                groupNumber = scanner.nextInt();
-                groupNumber = students[num].groupNumber;
+                student.groupNumber = scanner.nextInt();
                 break;
             case 3:
                 System.out.println("Введите новый номер студента в списке: ");
-                listNumber = scanner.nextInt();
-                listNumber = students[num].listNumber;
+                student.listNumber = scanner.nextInt();
+
                 break;
             case 4:
                 System.out.println("Введите новые оценки за прошедшую сессию через пробел:");
@@ -133,13 +128,13 @@ public class StudentArray {
                 String[] gradesStrings = gradesInput.split(" ");
                 if (gradesStrings.length < 8) {
                     System.out.println("Вы ввели меньше 8 оценок.");
-                    updateStudentInformation(num);
+                    updateStudentInformation(student);
                 }
 
                 for (int i = 0; i < 8; i++) {
                     grades[i] = Integer.parseInt(gradesStrings[i]);
                 }
-                grades = students[num].grades;
+                student.grades = grades;
                 break;
             default:
                 System.out.println("Некорректный выбор. Изменение отменено.");
@@ -318,7 +313,7 @@ public class StudentArray {
                 case 2:
                     System.out.println("Введите номер студента, у которого надо внести изменения в запись:");
                     int num = scanner.nextInt() - 1;
-                    updateStudentInformation();
+                    updateStudentInformation(students[num]);
                     break;
                 case 3:
                     showAllStudents();
@@ -353,6 +348,6 @@ public class StudentArray {
 
     }
 
-    
+
 
 }
