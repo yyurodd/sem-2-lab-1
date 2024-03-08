@@ -265,14 +265,6 @@ public class StudentArray {
         }
     }
 
-
-
-
-
-    public static void clearScreen(){
-        System.out.println("\n\n");
-    }
-
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
@@ -307,8 +299,7 @@ public class StudentArray {
 
                         }
                     }
-
-                    clearScreen();
+                    System.out.println("\n");
                     break;
                 case 2:
                     System.out.println("Введите номер студента, у которого надо внести изменения в запись:");
@@ -317,37 +308,31 @@ public class StudentArray {
                     break;
                 case 3:
                     showAllStudents();
-                    clearScreen();
+                    System.out.println("\n");
                     break;
                 case 4:
                     showStudentsByGroupNumberFromInput();
-                    clearScreen();
+                    System.out.println("\n");
                     break;
                 case 5:
                     showTopRatedStudents();
-                    clearScreen();
+                    System.out.println("\n");
                     break;
                 case 6:
                     showMaleFemaleCnt();
-                    clearScreen();
+                    System.out.println("\n");
                     break;
                 case 7:
                     showExcellentStudents();
                     showHonorStudents();
                     showC_Students();
-                    clearScreen();
+                    System.out.println("\n");
                     break;
                 case 8:
                     showKNumberedStudents();
-                    clearScreen();
+                    System.out.println("\n");
                     break;
             }
         }
-
-
-
     }
-
-
-
 }
