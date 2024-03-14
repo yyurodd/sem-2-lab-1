@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Scanner;
 //import java.io.*;
 
+
 class Student {
     String name;
     String gender;
@@ -12,31 +13,49 @@ class Student {
     int listNumber;
     int[] grades;
     float averageGrade;
-
+    String ID = String.valueOf(groupNumber) + listNumber;
     public Student(String name, String gender, int groupNumber, int listNumber, int[] grades) {
         this.name = name;
         this.gender = gender;
         this.groupNumber = groupNumber;
         this.listNumber = listNumber;
         this.grades = grades;
-
+        
     }
 }
 
-// Класс для работы с массивом студентов
+
 public class StudentArray {
-    private static Student[] students = new Student[100];
-    private static int size = 0;
+
+    private static final int MAX_STUDENTS = 100;
+    private static final Student[] students = new Student[MAX_STUDENTS];
+    private static int studentCount = 0;
+
 
     public static void showAllStudents() {
-        for (int i = 0; i < size; i++) {
-            System.out.println("Студент " + (i+1) + ": " + students[i].name + ", Пол: " + students[i].gender + ", Номер группы: " + students[i].groupNumber + ", Номер в списке: " + students[i].listNumber
-                    + ", Оценки за сессию: " + Arrays.toString(students[i].grades));
+        for (int i = 0; i < studentCount; i++) {
+            if (students[i] != null) {
+                System.out.println("Имя: " + students[i].name);
+                System.out.println("Пол: " + students[i].gender);
+                System.out.println("Номер группы: " + students[i].groupNumber);
+                System.out.println("Номер в списке: " + students[i].listNumber);
+
+                System.out.print("Оценки: ");
+                for (int grade : students[i].grades) {
+                    System.out.print(grade + " ");
+                }
+                System.out.println();
+
+                System.out.println("-------------------------------");
+            }
         }
     }
 
     public static void showStudentsByGroupNumber(int groupNumber) {
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < MAX_STUDENTS; i++) {
+            if (students[i] == null) {
+                continue;
+            }
             if (students[i].groupNumber == groupNumber) {
                 System.out.println("Студент " + (i+1) + ": " + students[i].name + ", Пол: " + students[i].gender + ", Номер в списке: " + students[i].listNumber
                         + ", Оценки за сессию: " + Arrays.toString(students[i].grades));
@@ -59,6 +78,7 @@ public class StudentArray {
     public static Student createNewStudentFromInput() {
         Scanner scanner = new Scanner(System.in);
 
+
         System.out.println("Введите имя студента: ");
         String name = scanner.nextLine();
 
@@ -76,8 +96,11 @@ public class StudentArray {
         int listNumber = Integer.parseInt(scanner.nextLine());
 
 
+
         int[] grades = new int[8];
-        System.out.println("Введите оценки за прошедшую сессию через пробел, 3 экзамена и 5 дифф. зачётов:");
+        System.out.println("""
+                Введите оценки за прошедшую сессию через пробел
+                1.АиГ, 2.МатАн, 3.Программирование, 4.Физика, 5.Философия, 6.Ин.Яз., 7.Информатика, 8.ОРГ""");
         String gradesInput = scanner.nextLine();
         String[] gradesStrings = gradesInput.split(" ");
         if (gradesStrings.length < 8) {
@@ -93,15 +116,17 @@ public class StudentArray {
         return new Student(name, gender, groupNumber, listNumber, grades);
     }
 
+
     public static void updateStudentInformation(Student student) {
 
         Scanner scanner = new Scanner(System.in);
         int[] grades;
-        System.out.println("Какую информацию вы хотите изменить?");
-        System.out.println("1. Имя студента");
-        System.out.println("2. Номер группы");
-        System.out.println("3. Номер студента в списке");
-        System.out.println("4. Оценки за сессию");
+        System.out.println("""
+        Какую информацию вы хотите изменить?"
+        "1. Имя студента"
+        "2. Номер группы"
+        "3. Номер студента в списке"
+        "4. Оценки за сессию""");
 
         int choice = scanner.nextInt();
 
@@ -144,16 +169,25 @@ public class StudentArray {
     }
 
     public static void showTopRatedStudents() {
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < MAX_STUDENTS; i++) {
             float sum = 0;
+            if (students[i] == null) {
+                continue;
+            }
             for (int grade : students[i].grades) {
                 sum += grade;
             }
             students[i].averageGrade = sum / 8;
         }
 
-        for (int i = 0; i < size - 1; i++){
-            for (int j = i + 1; j < size; j++){
+        for (int i = 0; i < MAX_STUDENTS - 1; i++){
+            if (students[i] == null) {
+                continue;
+            }
+            for (int j = i + 1; j < MAX_STUDENTS; j++){
+                if (students[j] == null) {
+                    continue;
+                }
                 if (students[j].averageGrade > students[i].averageGrade){
                     Student tmp = students[i];
                     students[i] = students[j];
@@ -163,7 +197,10 @@ public class StudentArray {
         }
 
         System.out.println("Топ студентов по рейтингу:");
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < MAX_STUDENTS; i++){
+            if (students[i] == null) {
+                continue;
+            }
             System.out.println((i+1) + ". " + students[i].name + " - средний балл: " + students[i].averageGrade);
         }
     }
@@ -171,7 +208,10 @@ public class StudentArray {
     public static void showMaleFemaleCnt(){
         int cntMale = 0;
         int cntFemale = 0;
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < MAX_STUDENTS; i++){
+            if (students[i] == null) {
+                continue;
+            }
             if (Objects.equals(students[i].gender, "М") || !Objects.equals(students[i].gender, "м")){
                 cntMale+=1;
             }
@@ -189,7 +229,10 @@ public class StudentArray {
         int k = scan.nextInt();
         int falses = 0;
         int success = 0;
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < MAX_STUDENTS; i++){
+            if (students[i] == null) {
+                continue;
+            }
             if (students[i].listNumber == k){
                 System.out.println("Студент " + (i+1) + ": " + students[i].name + ", Пол: " + students[i].gender + ", Номер группы: " + students[i].groupNumber + ", Номер в списке: " + students[i].listNumber
                         + ", Оценки за сессию: " + Arrays.toString(students[i].grades));
@@ -205,21 +248,28 @@ public class StudentArray {
         }
     }
 
-    public static boolean checkForDiffInListNums(){
-        for (int l = 0; l < size - 1; l++){
-            for (int j = l+1; j < size; j++){
-                if ((students[l].groupNumber == students[j].groupNumber) && (students[l].listNumber == students[j].listNumber)){
-                    System.out.println("Совпадают ID некоторых студентов, введите данные заново:");
-                    return true;
-                }
+    public static boolean checkForDiffInListNums(Student[] students, Student newStudent, int studentCount) {
+        for (int l = 0; l < studentCount; l++) {
+            if (students[l] == null) {
+                continue;
+            }
+
+            if ((students[l].groupNumber == newStudent.groupNumber) && (students[l].listNumber == newStudent.listNumber)) {
+                return true;
             }
         }
         return false;
     }
 
+
+
+
     public static void showExcellentStudents(){
         System.out.println("\nСтуденты, учащиеся только на 5:");
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < MAX_STUDENTS; i++){
+            if (students[i] == null) {
+                continue;
+            }
             int sum = 0;
             for (int grade : students[i].grades){
                 sum+=grade;
@@ -233,8 +283,10 @@ public class StudentArray {
 
     public static void showC_Students(){
         System.out.println("\nСтуденты, не получающие стипендию:");
-        for (int i = 0; i < size; i++){
-
+        for (int i = 0; i < MAX_STUDENTS; i++){
+            if (students[i] == null) {
+                continue;
+            }
             for (int grade : students[i].grades){
                 if (grade == 3 || grade == 2){
                     System.out.println("Студент " + (i+1) + ": " + students[i].name + ", Пол: " + students[i].gender + ", Номер группы: " + students[i].groupNumber + ", Номер в списке: " + students[i].listNumber
@@ -248,9 +300,12 @@ public class StudentArray {
 
     public static void showHonorStudents(){
         System.out.println("\nСтуденты, учащиеся на 4 и 5:");
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < MAX_STUDENTS; i++){
             int sum = 0;
             int cnt = 0;
+            if (students[i] == null) {
+                continue;
+            }
             for (int grade : students[i].grades){
                 if (grade == 4 | grade == 5){
                     sum+=grade;
@@ -270,37 +325,63 @@ public class StudentArray {
         Scanner scanner = new Scanner(System.in);
         int number;
         while (true){
-            System.out.println( "          Меню\n" +
-                    "1 - Создать новую запись о студенте\n" +
-                    "2 - Внести изменения в уже имеющуюся запись\n" +
-                    "3 - Вывести все данные о студентах\n" +
-                    "4 - Вывести информацию обо всех студентах определенной группы\n" +
-                    "5 - Вывести топ самых успешных студентов с наивысшим по рейтингу средним баллом за прошедшую сессию\n" +
-                    "6 - Вывести количество студентов мужского и женского пола\n" +
-                    "7 - Вывести данные о студентах, которые не получают стипендию; учатся только на «хорошо» и «отлично»; учатся только на «отлично»\n" +
-                    "8 - Вывести данные о студентах, имеющих определенный номер в списке \n" +
-                    "0 - Выйти из программы\n");
+            System.out.println("""
+                              Меню
+                    1 - Создать новую запись о студенте
+                    2 - Внести изменения в уже имеющуюся запись
+                    3 - Вывести все данные о студентах
+                    4 - Вывести информацию обо всех студентах определенной группы
+                    5 - Вывести топ самых успешных студентов с наивысшим по рейтингу средним баллом за прошедшую сессию
+                    6 - Вывести количество студентов мужского и женского пола
+                    7 - Вывести данные о студентах, которые не получают стипендию; учатся только на «хорошо» и «отлично»; учатся только на «отлично»
+                    8 - Вывести данные о студентах, имеющих определенный номер в списке\s
+                    0 - Выйти из программы
+                    """);
             number = scanner.nextInt();
             if (number == 0){
                 break;
             }
             switch (number) {
                 case 1:
-                    System.out.println("Введите количество студентов:");
-                    size = scanner.nextInt();
+                    if (studentCount >= MAX_STUDENTS) {
+                        System.out.println("Достигнуто максимальное количество студентов.");
+                        break;
+                    }
+
+                    System.out.print("Введите количество студентов: ");
+                    int size = scanner.nextInt();
+
+                    // Добавьте проверку, чтобы убедиться, что не превышено максимальное количество студентов
+                    if (studentCount + size > MAX_STUDENTS) {
+                        System.out.println("Нельзя добавить столько студентов, так как превышено максимальное количество.");
+                        break;
+                    }
+
+
 
                     for (int i = 0; i < size; i++) {
-                        students[i] = createNewStudentFromInput();
-                    }
-                    if (checkForDiffInListNums()){
-                        //КАК-ТО УДАЛИТЬ ПРЕДЫДУЩИЕ ЗАПИСИ КОГДА СДЕЛАЮ ФАЙЛЫ
-                        for (int i = 0; i < size; i++) {
-                            students[i] = createNewStudentFromInput();
+                        Student newStudent;
+                        boolean hasSameNumbers;
 
-                        }
+                        do {
+                            newStudent = createNewStudentFromInput();
+
+                            // Проверяем на совпадение номеров с уже существующими студентами
+                            hasSameNumbers = checkForDiffInListNums(students, newStudent, studentCount);
+
+                            if (hasSameNumbers) {
+                                System.out.println("Найдено совпадение номеров. Введите данные заново.");
+                            }
+                        } while (hasSameNumbers);
+
+                        students[studentCount] = newStudent;
+                        studentCount++;
                     }
-                    System.out.println("\n");
+
+
+                    System.out.println("Новые студенты успешно добавлены.");
                     break;
+
                 case 2:
                     System.out.println("Введите номер студента, у которого надо внести изменения в запись:");
                     int num = scanner.nextInt() - 1;
