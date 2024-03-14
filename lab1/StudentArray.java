@@ -13,14 +13,14 @@ class Student {
     int listNumber;
     int[] grades;
     float averageGrade;
-    String ID = String.valueOf(groupNumber) + listNumber;
+
     public Student(String name, String gender, int groupNumber, int listNumber, int[] grades) {
         this.name = name;
         this.gender = gender;
         this.groupNumber = groupNumber;
         this.listNumber = listNumber;
         this.grades = grades;
-        
+
     }
 }
 
@@ -82,12 +82,17 @@ public class StudentArray {
         System.out.println("Введите имя студента: ");
         String name = scanner.nextLine();
 
-        System.out.println("Введите пол студента(М или Ж): ");
-        String gender = scanner.nextLine();
-        if (!(Objects.equals(gender, "М") | Objects.equals(gender, "м") | Objects.equals(gender, "Ж") | Objects.equals(gender, "ж"))){
-            System.out.println("Неверно введён пол студента. Введите данные студента заново.");
-            createNewStudentFromInput();
-        }
+        String gender;
+        boolean validGender = false;
+        do {
+            System.out.println("Введите пол студента(М или Ж): ");
+            gender = scanner.nextLine();
+            if (gender.equalsIgnoreCase("М") || gender.equalsIgnoreCase("Ж")) {
+                validGender = true;
+            } else {
+                System.out.println("Неверно введён пол студента. Повторите ввод.");
+            }
+        } while (!validGender);
 
         System.out.println("Введите номер группы студента: ");
         int groupNumber = Integer.parseInt(scanner.nextLine());
@@ -117,9 +122,15 @@ public class StudentArray {
     }
 
 
-    public static void updateStudentInformation(Student student) {
-
+    public static void updateStudentInformation(Student student, String ID) {
         Scanner scanner = new Scanner(System.in);
+
+        String studentID = String.valueOf(student.groupNumber) + student.listNumber;
+        if(!ID.equals(studentID)){
+            System.out.println("Студент с указанным ID не найден.");
+            return;
+        }
+
         int[] grades;
         System.out.println("""
         Какую информацию вы хотите изменить?"
@@ -153,7 +164,7 @@ public class StudentArray {
                 String[] gradesStrings = gradesInput.split(" ");
                 if (gradesStrings.length < 8) {
                     System.out.println("Вы ввели меньше 8 оценок.");
-                    updateStudentInformation(student);
+                    updateStudentInformation(student,studentID);
                 }
 
                 for (int i = 0; i < 8; i++) {
@@ -383,9 +394,27 @@ public class StudentArray {
                     break;
 
                 case 2:
-                    System.out.println("Введите номер студента, у которого надо внести изменения в запись:");
-                    int num = scanner.nextInt() - 1;
-                    updateStudentInformation(students[num]);
+                    System.out.print("Введите ID студента, информацию которого нужно изменить(ID - номер группы + номер в списке без пробела, например 337222: ");
+                    scanner.nextLine();
+                    String studentId = scanner.nextLine();
+
+                    boolean found = false;
+                    for (Student student : students) {
+                        if (student == null) {
+                            continue;
+                        }
+                        String ID = String.valueOf(student.groupNumber) + student.listNumber;
+                        if (studentId.equals(ID)) {
+                            updateStudentInformation(student, ID);
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found) {
+                        System.out.println("Студент с указанным ID не найден.");
+                    }
+
                     break;
                 case 3:
                     showAllStudents();
