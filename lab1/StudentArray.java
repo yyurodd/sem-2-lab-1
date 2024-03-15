@@ -5,7 +5,26 @@ import java.util.Objects;
 import java.util.Scanner;
 //import java.io.*;
 
-
+class Applicant {
+    String name;
+    String gender;
+    int age;
+    String city;
+    static int[] examScores;
+    static float averageExamGrade;
+    boolean original;
+    int[] certGrades;
+    float averageCertGrade;
+    public Applicant(String name, String gender, int age, String city, int[] examScores, boolean original, int[] certGrades){
+        this.name = name;
+        this.gender = gender;
+        this.age = age;
+        this.city = city;
+        Applicant.examScores = examScores;
+        this.original = original;
+        this.certGrades = certGrades;
+    }
+}
 class Student {
     String name;
     String gender;
@@ -23,7 +42,81 @@ class Student {
 
     }
 }
+class ApplicantArray{
+    private static final int MAX_APPLICANTS = 100;
+    private static final Applicant[] applicants = new Applicant[MAX_APPLICANTS];
+    private static int applicantCount = 0;
 
+    public static Applicant createNewApplicantFromInput() {
+        Scanner scanner = new Scanner(System.in);
+
+
+        System.out.println("Введите имя абитуриента: ");
+        String name = scanner.nextLine();
+
+        String gender;
+        boolean validGender = false;
+        do {
+            System.out.println("Введите пол абитуриента(М или Ж): ");
+            gender = scanner.nextLine();
+            if (gender.equalsIgnoreCase("М") || gender.equalsIgnoreCase("Ж")) {
+                validGender = true;
+            } else {
+                System.out.println("Неверно введён пол абитуриента. Повторите ввод.");
+            }
+        } while (!validGender);
+
+        System.out.println("Введите возраст абитуриента: ");
+        int age = Integer.parseInt(scanner.nextLine());
+
+        System.out.println("Введите город абитуриента: ");
+        String city = scanner.nextLine();
+
+
+
+        System.out.println("Введите количество сданных предметов ЕГЭ: ");
+        int num = scanner.nextInt();
+        int[] examScores = new int[num];
+        System.out.println("Введите баллы ЕГЭ через пробел: ");
+        String scoresInput = scanner.nextLine();
+        String[] scoresStrings = scoresInput.split(" ");
+        if (scoresStrings.length < num) {
+            System.out.println("Ошибка при вводе, повторите ввод снова.");
+            return createNewApplicantFromInput();
+        }
+        for (int i = 0; i < num; i++) {
+            examScores[i] = Integer.parseInt(scoresStrings[i]);
+        }
+
+        System.out.println("Наличие оригинала аттестата?(1-да/0-нет): ");
+        boolean original = (scanner.nextInt() == 1);
+
+        System.out.println("Введите количество предметов в аттестате: ");
+        int certNum = scanner.nextInt();
+        int[] certGrades = new int[num];
+        System.out.println("Введите оценки в аттестате через пробел: ");
+        String gradesInput = scanner.nextLine();
+        String[] gradesStrings = gradesInput.split(" ");
+        if (gradesStrings.length < num) {
+            System.out.println("Ошибка при вводе, повторите ввод снова.");
+            return createNewApplicantFromInput();
+        }
+        for (int i = 0; i < num; i++) {
+            certGrades[i] = Integer.parseInt(gradesStrings[i]);
+        }
+        return new Applicant(name, gender, age, city, examScores, original, certGrades);
+    }
+
+    public static void averageGrade(){
+        float sum = 0;
+
+        for (int grade : Applicant.examScores) {
+            sum += grade;
+        }
+        Applicant.averageExamGrade = sum / !!!!!!!num!!!!!!!!!!!;
+    }
+    }
+}
 
 public class StudentArray {
 
