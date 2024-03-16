@@ -3,6 +3,10 @@ package lab1;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
+
+import static lab1.ApplicantArray.MAX_APPLICANTS;
+import static lab1.StudentArray.MAX_STUDENTS;
+
 //import java.io.*;
 
 class Applicant {
@@ -10,21 +14,24 @@ class Applicant {
     String gender;
     int age;
     String city;
-    static int[] examScores;
-    static float averageExamGrade;
+    float averageExamGrade;
     boolean original;
-    int[] certGrades;
     float averageCertGrade;
-    public Applicant(String name, String gender, int age, String city, int[] examScores, boolean original, int[] certGrades){
+    int exNum;
+    int certNum;
+    public Applicant(String name, String gender, int age, String city, float averageExamGrade, boolean original, float averageCertGrade ,int exNum,int certNum){
         this.name = name;
         this.gender = gender;
         this.age = age;
         this.city = city;
-        Applicant.examScores = examScores;
+        this.averageExamGrade = averageExamGrade;
         this.original = original;
-        this.certGrades = certGrades;
+        this.averageCertGrade = averageCertGrade;
+        this.exNum = exNum;
+        this.certNum = certNum;
     }
 }
+
 class Student {
     String name;
     String gender;
@@ -39,13 +46,13 @@ class Student {
         this.groupNumber = groupNumber;
         this.listNumber = listNumber;
         this.grades = grades;
-
     }
 }
+
 class ApplicantArray{
-    private static final int MAX_APPLICANTS = 100;
-    private static final Applicant[] applicants = new Applicant[MAX_APPLICANTS];
-    private static int applicantCount = 0;
+    public static final int MAX_APPLICANTS = 100;
+    public static final Applicant[] applicants = new Applicant[MAX_APPLICANTS];
+    public static int applicantCount = 0;
 
     public static Applicant createNewApplicantFromInput() {
         Scanner scanner = new Scanner(System.in);
@@ -75,54 +82,89 @@ class ApplicantArray{
 
 
         System.out.println("Введите количество сданных предметов ЕГЭ: ");
-        int num = scanner.nextInt();
-        int[] examScores = new int[num];
+        int exNum = Integer.parseInt(scanner.nextLine());
+        int[] examScores = new int[exNum];
         System.out.println("Введите баллы ЕГЭ через пробел: ");
         String scoresInput = scanner.nextLine();
         String[] scoresStrings = scoresInput.split(" ");
-        if (scoresStrings.length < num) {
-            System.out.println("Ошибка при вводе, повторите ввод снова.");
-            return createNewApplicantFromInput();
-        }
-        for (int i = 0; i < num; i++) {
+        for (int i = 0; i < exNum; i++) {
             examScores[i] = Integer.parseInt(scoresStrings[i]);
         }
+        float sumex = 0;
+        for(int exScore : examScores){
+            sumex += exScore;
+        }
+        float averageExamScore = sumex / exNum;
 
         System.out.println("Наличие оригинала аттестата?(1-да/0-нет): ");
-        boolean original = (scanner.nextInt() == 1);
+        boolean original = (Integer.parseInt(scanner.nextLine()) == 1);
+
 
         System.out.println("Введите количество предметов в аттестате: ");
-        int certNum = scanner.nextInt();
-        int[] certGrades = new int[num];
+        int certNum = Integer.parseInt(scanner.nextLine());
+        int[] certGrades = new int[certNum];
         System.out.println("Введите оценки в аттестате через пробел: ");
         String gradesInput = scanner.nextLine();
         String[] gradesStrings = gradesInput.split(" ");
-        if (gradesStrings.length < num) {
-            System.out.println("Ошибка при вводе, повторите ввод снова.");
-            return createNewApplicantFromInput();
-        }
-        for (int i = 0; i < num; i++) {
+
+        for (int i = 0; i < certNum; i++) {
             certGrades[i] = Integer.parseInt(gradesStrings[i]);
         }
-        return new Applicant(name, gender, age, city, examScores, original, certGrades);
-    }
 
-    public static void averageGrade(){
         float sum = 0;
 
-        for (int grade : Applicant.examScores) {
+        for (int grade : certGrades) {
             sum += grade;
         }
-        Applicant.averageExamGrade = sum / !!!!!!!num!!!!!!!!!!!;
+        float averageCertGrade = sum / certNum;
+
+        return new Applicant(name, gender, age, city, averageExamScore, original, averageCertGrade,exNum,certNum);
     }
+
+    public static void averageExamGrade(){
+        System.out.println("Абитуриенты со средним баллом ЕГЭ выше 85: ");
+        for (int i = 0; i < MAX_APPLICANTS; i++){
+            if (applicants[i] != null && applicants[i].averageExamGrade > 85) {
+                System.out.println("Абитуриент " + (i+1) + ": " + applicants[i].name + ", Пол: " + applicants[i].gender + ", Возраст: " + applicants[i].age + ", Город: " + applicants[i].city
+                        + ", Средний балл ЕГЭ: " + applicants[i].averageExamGrade + " , Наличие оригинала аттестата: " + applicants[i].original + " , Средний балл аттестата: " + applicants[i].averageCertGrade);
+            }
+        }
+    }
+
+    public static void lessThan18(){
+        for (int i = 0; i < MAX_APPLICANTS; i++){
+            if (applicants[i] != null &&  applicants[i].age < 18){
+                System.out.println("Абитуриент " + (i+1) + ": " + applicants[i].name + ", Пол: " + applicants[i].gender + ", Возраст: " + applicants[i].age + ", Город: " + applicants[i].city
+                        + ", Средний балл ЕГЭ: " + applicants[i].averageExamGrade + " , Наличие оригинала аттестата: " + applicants[i].original + " , Средний балл аттестата: " + applicants[i].averageCertGrade);
+            }
+        }
+    }
+
+    public static void notSPB(){
+        for (int i = 0; i < MAX_APPLICANTS; i++){
+            if (applicants[i] != null && !applicants[i].city.equalsIgnoreCase("Санкт-Петербург")){
+                System.out.println("Абитуриент " + (i+1) + ": " + applicants[i].name + ", Пол: " + applicants[i].gender + ", Возраст: " + applicants[i].age + ", Город: " + applicants[i].city
+                        + ", Средний балл ЕГЭ: " + applicants[i].averageExamGrade + " , Наличие оригинала аттестата: " + applicants[i].original + " , Средний балл аттестата: " + applicants[i].averageCertGrade);
+            }
+        }
+    }
+
+    public static void goldMedal(){
+        for (int i = 0; i < MAX_APPLICANTS; i++){
+            if (applicants[i] != null && applicants[i].averageCertGrade == 5){
+                System.out.println("Абитуриент " + (i+1) + ": " + applicants[i].name + ", Пол: " + applicants[i].gender + ", Возраст: " + applicants[i].age + ", Город: " + applicants[i].city
+                        + ", Средний балл ЕГЭ: " + applicants[i].averageExamGrade + " , Наличие оригинала аттестата: " + applicants[i].original + " , Средний балл аттестата: " + applicants[i].averageCertGrade);
+            }
+        }
     }
 }
 
-public class StudentArray {
 
-    private static final int MAX_STUDENTS = 100;
-    private static final Student[] students = new Student[MAX_STUDENTS];
-    private static int studentCount = 0;
+class StudentArray {
+
+    public static final int MAX_STUDENTS = 100;
+    public static final Student[] students = new Student[MAX_STUDENTS];
+    public static int studentCount = 0;
 
 
     public static void showAllStudents() {
@@ -301,11 +343,13 @@ public class StudentArray {
         }
 
         System.out.println("Топ студентов по рейтингу:");
-        for (int i = 0; i < MAX_STUDENTS; i++){
+        for (int i = 0; i < MAX_STUDENTS; i++) {
             if (students[i] == null) {
                 continue;
             }
-            System.out.println((i+1) + ". " + students[i].name + " - средний балл: " + students[i].averageGrade);
+
+            System.out.println((i + 1) + ". " + students[i].name + " - средний балл: " + students[i].averageGrade);
+
         }
     }
 
@@ -424,11 +468,16 @@ public class StudentArray {
         }
     }
 
-    public static void main(String[] args) {
 
+}
+
+public class Main {
+    public static void main(String[] args) {
+        StudentArray obj1 = new StudentArray();
+        ApplicantArray obj2 = new ApplicantArray();
         Scanner scanner = new Scanner(System.in);
         int number;
-        while (true){
+        while (true) {
             System.out.println("""
                               Меню
                     1 - Создать новую запись о студенте
@@ -438,16 +487,24 @@ public class StudentArray {
                     5 - Вывести топ самых успешных студентов с наивысшим по рейтингу средним баллом за прошедшую сессию
                     6 - Вывести количество студентов мужского и женского пола
                     7 - Вывести данные о студентах, которые не получают стипендию; учатся только на «хорошо» и «отлично»; учатся только на «отлично»
-                    8 - Вывести данные о студентах, имеющих определенный номер в списке\s
+                    8 - Вывести данные о студентах, имеющих определенный номер в списке
+                    ---------------------------------------------------------------------------------------------------------------------------------
+                              ИДЗ
+                    ---------------------------------------------------------------------------------------------------------------------------------
+                    9 - Создать новую запись об абитуриенте
+                    10 - Вывести информацию об абитуриентах младше 18 лет
+                    11 - Вывести информацию об абитуриентах, чей средний балл ЕГЭ больше 85
+                    12 - Вывести информацию об иногородних абитуриентах
+                    13 - Вывести информацию об абитуриентах с аттестатом с отличием
                     0 - Выйти из программы
                     """);
             number = scanner.nextInt();
-            if (number == 0){
+            if (number == 0) {
                 break;
             }
             switch (number) {
                 case 1:
-                    if (studentCount >= MAX_STUDENTS) {
+                    if (StudentArray.studentCount >= MAX_STUDENTS) {
                         System.out.println("Достигнуто максимальное количество студентов.");
                         break;
                     }
@@ -456,11 +513,10 @@ public class StudentArray {
                     int size = scanner.nextInt();
 
                     // Добавьте проверку, чтобы убедиться, что не превышено максимальное количество студентов
-                    if (studentCount + size > MAX_STUDENTS) {
+                    if (StudentArray.studentCount + size > MAX_STUDENTS) {
                         System.out.println("Нельзя добавить столько студентов, так как превышено максимальное количество.");
                         break;
                     }
-
 
 
                     for (int i = 0; i < size; i++) {
@@ -468,18 +524,18 @@ public class StudentArray {
                         boolean hasSameNumbers;
 
                         do {
-                            newStudent = createNewStudentFromInput();
+                            newStudent = StudentArray.createNewStudentFromInput();
 
                             // Проверяем на совпадение номеров с уже существующими студентами
-                            hasSameNumbers = checkForDiffInListNums(students, newStudent, studentCount);
+                            hasSameNumbers = StudentArray.checkForDiffInListNums(StudentArray.students, newStudent, StudentArray.studentCount);
 
                             if (hasSameNumbers) {
                                 System.out.println("Найдено совпадение номеров. Введите данные заново.");
                             }
                         } while (hasSameNumbers);
 
-                        students[studentCount] = newStudent;
-                        studentCount++;
+                        StudentArray.students[StudentArray.studentCount] = newStudent;
+                        StudentArray.studentCount++;
                     }
 
 
@@ -492,13 +548,13 @@ public class StudentArray {
                     String studentId = scanner.nextLine();
 
                     boolean found = false;
-                    for (Student student : students) {
+                    for (Student student : StudentArray.students) {
                         if (student == null) {
                             continue;
                         }
                         String ID = String.valueOf(student.groupNumber) + student.listNumber;
                         if (studentId.equals(ID)) {
-                            updateStudentInformation(student, ID);
+                            StudentArray.updateStudentInformation(student, ID);
                             found = true;
                             break;
                         }
@@ -510,32 +566,76 @@ public class StudentArray {
 
                     break;
                 case 3:
-                    showAllStudents();
+                    StudentArray.showAllStudents();
                     System.out.println("\n");
                     break;
                 case 4:
-                    showStudentsByGroupNumberFromInput();
+                    StudentArray.showStudentsByGroupNumberFromInput();
                     System.out.println("\n");
                     break;
                 case 5:
-                    showTopRatedStudents();
+                    StudentArray.showTopRatedStudents();
                     System.out.println("\n");
                     break;
                 case 6:
-                    showMaleFemaleCnt();
+                    StudentArray.showMaleFemaleCnt();
                     System.out.println("\n");
                     break;
                 case 7:
-                    showExcellentStudents();
-                    showHonorStudents();
-                    showC_Students();
+                    StudentArray.showExcellentStudents();
+                    StudentArray.showHonorStudents();
+                    StudentArray.showC_Students();
                     System.out.println("\n");
                     break;
                 case 8:
-                    showKNumberedStudents();
+                    StudentArray.showKNumberedStudents();
+                    System.out.println("\n");
+                    break;
+                case 9:
+
+                    if (ApplicantArray.applicantCount >= MAX_APPLICANTS) {
+                        System.out.println("Достигнуто максимальное количество абитуриентов.");
+                        break;
+                    }
+
+                    System.out.print("Введите количество абитуриентов: ");
+                    int applicantSize = scanner.nextInt();
+
+                    // Добавьте проверку, чтобы убедиться, что не превышено максимальное количество студентов
+                    if (StudentArray.studentCount + applicantSize > MAX_APPLICANTS) {
+                        System.out.println("Нельзя добавить столько абитуриентов, так как превышено максимальное количество.");
+                        break;
+                    }
+                    for (int i = 0; i < applicantSize; i++) {
+                        Applicant newApplicant = ApplicantArray.createNewApplicantFromInput();
+
+
+                        ApplicantArray.applicants[ApplicantArray.applicantCount] = newApplicant;
+                        ApplicantArray.applicantCount++;
+                    }
+
+
+                    System.out.println("Новые абитуриенты успешно добавлены.");
+                    System.out.println("\n");
+                    break;
+                case 10:
+                    ApplicantArray.lessThan18();
+                    System.out.println("\n");
+                    break;
+                case 11:
+                    ApplicantArray.averageExamGrade();
+                    System.out.println("\n");
+                    break;
+                case 12:
+                    ApplicantArray.notSPB();
+                    System.out.println("\n");
+                    break;
+                case 13:
+                    ApplicantArray.goldMedal();
                     System.out.println("\n");
                     break;
             }
+
         }
     }
 }
